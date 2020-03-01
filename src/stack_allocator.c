@@ -1,7 +1,7 @@
 #include "../include/stack_allocator.h"
-#include "../debug/debug.h"					// M_ASSERT, ASSERT, PRINT, show_memory
+#include "../debug/debug.h"				// M_ASSERT, ASSERT, PRINT, show_memory
 #include "../include/memory.h"				// ALIGNED_SIZE, DEFAULT_ALIGNMENT
-#include <stdlib.h>							// malloc, free
+#include <stdlib.h>					// malloc, free
 
 #define SIZE_OF_ALLOCATION_BLOCK_SIZE sizeof(size_t)  
 
