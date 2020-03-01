@@ -1,7 +1,7 @@
 #include "../include/linear_allocator.h"
-#include "../debug/debug.h"					// M_ASSERT, PRINT
+#include "../debug/debug.h"				// M_ASSERT, PRINT
 #include "../include/memory.h"				// ALIGNED_SIZE, DEFAULT_ALIGNMENT
-#include <stdlib.h>							// malloc, free
+#include <stdlib.h>					// malloc, free
 
 void la_init(LinearAllocator *allocator, const size_t total_size)
 {
