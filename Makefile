@@ -1,7 +1,7 @@
 all: allocators clean
 
 allocators: main.o debug.o linear.o stack.o pool.o double_buffered.o double_ended.o
-	gcc main.o debug.o linear.o stack.o pool.o double_buffered.o double_ended.o -o allocators
+	gcc main.o debug.o linear.o stack.o pool.o double_buffered.o double_ended.o -o main
 
 main.o: main.c
 	gcc -c main.c
@@ -25,4 +25,4 @@ double_ended.o: src/double_ended_stack_allocator.c include/double_ended_stack_al
 	gcc -c src/double_ended_stack_allocator.c -o double_ended.o
 
 clean:
-	rm -f *.o allocators
+	rm -f *.o main
