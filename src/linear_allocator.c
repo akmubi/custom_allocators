@@ -66,5 +66,13 @@ void la_show_memory(LinearAllocator *allocator)
 {
 	M_ASSERT(allocator != NULL, "Linear Allocator is NULL");
 	PRINT("Memory occupied by LinearAllocator:");
+	PRINT_UINT((const size_t)(allocator->end - allocator->start));
 	show_memory(allocator->start, (const size_t)(allocator->end - allocator->start));
+}
+
+void la_show_all_info(LinearAllocator *allocator)
+{
+	PRINT_UINT(la_used_space(allocator));
+	PRINT_UINT(la_remaining_space(allocator));
+	la_show_memory(allocator);
 }

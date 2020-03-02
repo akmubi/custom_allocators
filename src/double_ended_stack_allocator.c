@@ -171,3 +171,15 @@ void desa_show_memory(DoubleEndedStackAllocator *allocator)
 	PRINT("Memory occupied by DoubleEndedStackAllocator:");
 	show_memory(allocator->start, (const size_t)(allocator->end - allocator->start));
 }
+
+void desa_space_info(DoubleEndedStackAllocator *allocator)
+{
+	PRINT_UINT(desa_used_space(allocator));
+	PRINT_UINT(desa_remaining_space(allocator));
+}
+
+void desa_show_all_info(DoubleEndedStackAllocator *allocator)
+{
+	desa_space_info(allocator);
+	desa_show_memory(allocator);
+}

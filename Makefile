@@ -25,4 +25,4 @@ double_ended.o: src/double_ended_stack_allocator.c include/double_ended_stack_al
 	gcc -c src/double_ended_stack_allocator.c -o double_ended.o
 
 clean:
-	rm -f *.o main
+	rm -f *.o

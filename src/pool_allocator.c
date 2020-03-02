@@ -8,6 +8,10 @@ void pa_init_aligned(PoolAllocator *allocator, const size_t num_of_elements, con
 	M_ASSERT(allocator != NULL, "Pool Allocator is NULL");
 	M_ASSERT((alignment & (alignment - 1)) == 0, "Incorrect alignment");
 	
+	// if alignment will be less than default alignment
+	// then we can't fit address into an element block
+	ASSERT(alignment >= DEFAULT_ALIGNMENT);
+	
 	// calculate each element aligned size and total aligned size for allocations
 	const size_t aligned_element_size = ALIGNED_SIZE(element_size, alignment);
 	size_t aligned_size = num_of_elements * aligned_element_size; 
@@ -25,10 +29,10 @@ void pa_init_aligned(PoolAllocator *allocator, const size_t num_of_elements, con
 	allocator->start = ptr;
 
 	// starting in head
-	allocator->next = (struct FreeList *)ptr;
+	allocator->freelist.next = (struct FreeList *)ptr;
 
 	// create iterator that starts in head too
-	struct FreeList *iterator = allocator->next;
+	struct FreeList *iterator = allocator->freelist.next;
 
 	for (int i = 0; i < num_of_elements; i++)
 	{
@@ -58,17 +62,17 @@ void pa_terminate(PoolAllocator *allocator)
 void *pa_alloc(PoolAllocator *allocator)
 {
 	M_ASSERT(allocator != NULL, "Pool Allocator is NULL");
-	if (allocator->next == NULL)
+	if (allocator->freelist.next == NULL)
 	{
 		PRINT("There is no available space");
 		return NULL;
 	}
 	
 	// get address of current head element of free list
-	struct FreeList *head = allocator->next;
+	struct FreeList *head = allocator->freelist.next;
 
 	// make next element address a new entry point
-	allocator->next = head->next;
+	allocator->freelist.next = head->next;
 
 	// return first element
 	return head;
@@ -86,10 +90,10 @@ void pa_free(PoolAllocator *allocator, void *ptr)
 	struct FreeList *head = (struct FreeList *)ptr;
 
 	// make returned chunk point to head of free list
-	head->next = allocator->next;
+	head->next = allocator->freelist.next;
 
 	// make returned chunk head of free list
-	allocator->next = head;
+	allocator->freelist.next = head;
 }
 
 void pa_reset(PoolAllocator *allocator)
@@ -107,7 +111,7 @@ void pa_reset(PoolAllocator *allocator)
 	iterator->next = NULL;
 
 	// return next pointer to head of allocated block
-	allocator->next = (struct FreeList *)allocator->start;
+	allocator->freelist.next = (struct FreeList *)allocator->start;
 }
 
 void pa_show_memory(PoolAllocator *allocator)
@@ -120,5 +124,11 @@ void pa_show_memory(PoolAllocator *allocator)
 void *pa_get_header(PoolAllocator *allocator)
 {
 	M_ASSERT(allocator != NULL, "Pool Allocator is NULL");
-	return (void *)allocator->next;
+	return (void *)allocator->freelist.next;
+}
+
+void pa_show_all_info(PoolAllocator *allocator)
+{
+	PRINT_HEX(pa_get_header(allocator));
+	pa_show_memory(allocator);
 }

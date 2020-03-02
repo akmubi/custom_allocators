@@ -7,7 +7,7 @@ typedef struct
 	struct FreeList
 	{
 		struct FreeList *next;
-	};
+	} freelist;
 	char *start;
 	size_t num_of_elements;
 	size_t element_size;
@@ -23,4 +23,5 @@ extern void pa_reset		(PoolAllocator *allocator);
 // FOR DEBUGGING
 extern void pa_show_memory	(PoolAllocator *allocator);
 extern void *pa_get_header	(PoolAllocator *allocator);
+extern void pa_show_all_info(PoolAllocator *allocator);
 #endif	// _POOL_ALLOCATOR_H_

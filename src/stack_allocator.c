@@ -98,3 +98,15 @@ void sa_show_memory(StackAllocator *allocator)
 	PRINT("Memory occupied by StackAllocator:");
 	show_memory(allocator->start, (const size_t)(allocator->end - allocator->start));
 }
+
+void sa_space_info(StackAllocator *allocator)
+{
+	PRINT_UINT(sa_used_space(allocator));
+	PRINT_UINT(sa_remaining_space(allocator));
+}
+
+void sa_show_all_info(StackAllocator *allocator)
+{
+	sa_space_info(allocator);
+	sa_show_memory(allocator);
+}

@@ -23,13 +23,6 @@ int main(void)
 		LinearAllocator allocator;
 		const size_t total_size = sizeof(int) * 10;
 
-		void la_show_all_info(LinearAllocator *allocator)
-		{
-			PRINT_INT(la_used_space(allocator));
-			PRINT_INT(la_remaining_space(allocator));
-			la_show_memory(allocator);
-		}
-
 		PRINT("[LINEAR ALLOCATOR INITIALIZED]");
 		la_init(&allocator, total_size);
 		la_show_all_info(&allocator);
@@ -38,19 +31,25 @@ int main(void)
 		PRINT("[FIRST ALLOCATION]");
 		const size_t n = 3;
 		int *array = la_alloc(&allocator, n * sizeof(int));
-		for (int i = 0; i < n; i++)
-			array[i] = 0x3;
+		if (array != NULL)
+		{
+			for (int i = 0; i < n; i++)
+				array[i] = 3;
+			la_show_all_info(&allocator);
+		}
 		
-		la_show_all_info(&allocator);
 
 		// Second Allocation
 		PRINT("[SECOND ALLOCATION]");
 		const size_t m = 6;
 		int *array2 = la_alloc(&allocator, m * sizeof(int));
-		for (int i = 0; i < m; i++)
-			array2[i] = 0x7;
 		
-		la_show_all_info(&allocator);
+		if (array2 != NULL)
+		{
+			for (int i = 0; i < m; i++)
+			array2[i] = 7;
+			la_show_all_info(&allocator);
+		}
 
 		// Third Allocation
 		PRINT("[THIRD ALLOCATION]");
@@ -75,18 +74,6 @@ int main(void)
 	{
 		StackAllocator allocator;
 		const size_t total_size = sizeof(int) * 10;
-		
-		void sa_space_info(StackAllocator *allocator)
-		{
-			PRINT_INT(sa_used_space(allocator));
-			PRINT_INT(sa_remaining_space(allocator));
-		}
-
-		void sa_show_all_info(StackAllocator *allocator)
-		{
-			sa_space_info(allocator);
-			sa_show_memory(allocator);
-		}
 
 		PRINT("[STACK ALLOCATOR INITIALIZED]");
 		sa_init(&allocator, total_size);
@@ -96,19 +83,24 @@ int main(void)
 		PRINT("[FIRST ALLOCATION]");
 		const size_t n = 4;
 		int *array = sa_alloc(&allocator, n * sizeof(*array));
-		for (int i = 0; i < n; i++)
-			array[i] = 0x3;
-
-		sa_show_all_info(&allocator);
+		if (array != NULL)
+		{
+			for (int i = 0; i < n; i++)
+				array[i] = 0x3;
+			sa_show_all_info(&allocator);
+		}
 
 		// Second allocation
 		PRINT("[SECOND ALLOCATION]");
 		const size_t m = 12;
 		char *array2 = sa_alloc(&allocator, m * sizeof(*array2));
-		for (int i = 0; i < m; i++)
-			array2[i] = 0x7;
+		if (array2 != NULL)
+		{
+			for (int i = 0; i < m; i++)
+				array2[i] = 0x7;
+			sa_show_all_info(&allocator);
+		}
 
-		sa_show_all_info(&allocator);
 
 		// Third allocation
 		// no space available
@@ -160,11 +152,6 @@ int main(void)
 
 		const size_t element_size = sizeof(struct SomeObject);
 
-		void pa_show_all_info(PoolAllocator *allocator)
-		{
-			PRINT_HEX(pa_get_header(allocator));
-			pa_show_memory(allocator);
-		}
 		PRINT("[POOL ALLOCATOR INITIALIZED]");
 		pa_init(&allocator, num_of_elements, element_size);
 		pa_show_all_info(&allocator);
@@ -173,9 +160,12 @@ int main(void)
 		for (int i = 0; i < num_of_elements; i++)
 		{
 			array_of_objects[i] = (struct SomeObject *)pa_alloc(&allocator);
-			array_of_objects[i]->data1 = 0x0 + i;
-			array_of_objects[i]->data2 = 0x9 + i;
-			array_of_objects[i]->data3 = 'A' + i;
+			if (array_of_objects[i] != NULL)
+			{
+				array_of_objects[i]->data1 = 0x0 + i;
+				array_of_objects[i]->data2 = 0x9 + i;
+				array_of_objects[i]->data3 = 'A' + i;
+			}
 		}
 		pa_show_all_info(&allocator);
 
@@ -205,18 +195,6 @@ int main(void)
 		DoubleBufferedAllocator allocator;
 		const size_t total_size = 10 * sizeof(int);
 
-		void dba_space_info(DoubleBufferedAllocator *allocator)
-		{
-			PRINT_INT(dba_used_space(allocator));
-			PRINT_INT(dba_remaining_space(allocator));
-		}
-
-		void dba_show_all_info(DoubleBufferedAllocator *allocator)
-		{
-			dba_space_info(allocator);
-			dba_show_memory(allocator);
-		}
-
 		PRINT("[DOUBLE-BUFFERED ALLOCATOR INITIALIZED]");
 		dba_init(&allocator, total_size);
 		dba_show_all_info(&allocator);
@@ -229,21 +207,27 @@ int main(void)
 
 		const size_t n = 3;
 		int *array = dba_alloc(&allocator, n * sizeof(*array));
-		for (int i = 0; i < n; i++)
+		if (array != NULL)
 		{
-			array[i] = 0xFFFFFFFF;
+			for (int i = 0; i < n; i++)
+			{
+				array[i] = 0xFFFFFFFF;
+			}
+			dba_show_all_info(&allocator);
 		}
-		dba_show_all_info(&allocator);
 
 		// second allocation
 		PRINT("second allocation\n");
 		const size_t m = 5;
 		int *array2 = dba_alloc(&allocator, m * sizeof(*array2));
-		for (int i = 0; i < m; i++)
+		if (array2 != NULL)
 		{
-			array2[i] = 0xAAAAAAAA;
+			for (int i = 0; i < m; i++)
+			{
+				array2[i] = 0xAAAAAAAA;
+			}
+			dba_show_all_info(&allocator);
 		}
-		dba_show_all_info(&allocator);
 
 		PRINT("[BUFFERS SWAPED]");
 		dba_swap_buffers(&allocator);
@@ -255,11 +239,14 @@ int main(void)
 		PRINT("first allocation\n");
 		const size_t k = 4;
 		long long int *array3 = dba_alloc(&allocator, k * sizeof(*array3));
-		for (int i = 0; i < k; i++)
+		if (array3 != NULL)
 		{
-			array3[i] = 0xDDDDDDDD;
+			for (int i = 0; i < k; i++)
+			{
+				array3[i] = 0xDDDDDDDD;
+			}
+			dba_show_all_info(&allocator);
 		}
-		dba_show_all_info(&allocator);
 
 		// error will occur if IGNORE_NULL turned off
 		const size_t l = 3;
@@ -288,18 +275,6 @@ int main(void)
 	{
 		DoubleEndedStackAllocator allocator;
 		const size_t total_size = 128;
-		
-		void desa_space_info(DoubleEndedStackAllocator *allocator)
-		{
-			PRINT_INT(desa_used_space(allocator));
-			PRINT_INT(desa_remaining_space(allocator));
-		}
-
-		void desa_show_all_info(DoubleEndedStackAllocator *allocator)
-		{
-			desa_space_info(allocator);
-			desa_show_memory(allocator);
-		}
 
 		PRINT("[DOUBLE-ENDED STACK ALLOCATOR INITIALIZED]");
 		desa_init(&allocator, 128);
@@ -313,30 +288,42 @@ int main(void)
 		PRINT("FIRST FRONT ALLOCATION");
 
 		array = desa_front_alloc(&allocator, l_n * sizeof(*array));
-		for (int i = 0; i < l_n; i++)
-			array[i] = 0xAAAAAAAA;
-		desa_show_all_info(&allocator);
+		if (array != NULL)
+		{
+			for (int i = 0; i < l_n; i++)
+				array[i] = 0xAAAAAAAA;
+			desa_show_all_info(&allocator);
+		}
 
 		// Second front allocation
 		PRINT("SECOND FRONT ALLOCATION");
 		array2 = desa_front_alloc(&allocator, l_m * sizeof(*array2));
-		for (int i = 0; i < l_m; i++)
-			array2[i] = 0xBB;
-		desa_show_all_info(&allocator);
+		if (array2 != NULL)
+		{
+			for (int i = 0; i < l_m; i++)
+				array2[i] = 0xBB;
+			desa_show_all_info(&allocator);
+		}
 
 		// First back allocation
 		PRINT("FIRST BACK ALLOCATION");
 		array3 = desa_back_alloc(&allocator, u_n * sizeof(*array3));
-		for (int i = 0; i < u_n; i++)
-			array3[i] = 0xCC;
-		desa_show_all_info(&allocator);
+		if (array3 != NULL)
+		{
+			for (int i = 0; i < u_n; i++)
+				array3[i] = 0xCC;
+			desa_show_all_info(&allocator);
+		}
 
 		// Second back allocation
 		PRINT("SECOND BACK ALLOCATION");
 		array4 = desa_back_alloc(&allocator, u_m * sizeof(*array4));
-		for (int i = 0; i < u_m; i++)
-			array4[i] = 0xDDDDDDDD;
-		desa_show_all_info(&allocator);
+		if (array4 != NULL)
+		{
+			for (int i = 0; i < u_m; i++)
+				array4[i] = 0xDDDDDDDD;
+			desa_show_all_info(&allocator);
+		}
 
 		PRINT("BACK DEALLOCATION");
 		desa_back_free(&allocator, array4);

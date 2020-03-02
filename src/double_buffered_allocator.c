@@ -81,3 +81,15 @@ const size_t dba_remaining_space(DoubleBufferedAllocator *allocator)
 	M_ASSERT(allocator != NULL, "Double-Buffered Allocator is NULL");
 	return sa_remaining_space(&allocator->stack[allocator->current_stack]);
 }
+
+void dba_space_info(DoubleBufferedAllocator *allocator)
+{
+	PRINT_UINT(dba_used_space(allocator));
+	PRINT_UINT(dba_remaining_space(allocator));
+}
+
+void dba_show_all_info(DoubleBufferedAllocator *allocator)
+{
+	dba_space_info(allocator);
+	dba_show_memory(allocator);
+}

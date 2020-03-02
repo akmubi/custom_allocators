@@ -58,22 +58,39 @@
 //
 // MEMORY DUMP
 //
-#define DEBUG_MEMORY_ALIGNMENT 4
-#define DEBUG_MEMORY_ROW_LENGTH 4
+#if defined(_WIN64) || defined(__x86_64__)
+	#define DEBUG_MEMORY_ALIGNMENT 8
+	#define DEBUG_MEMORY_ROW_LENGTH 8
+#else
+	#define DEBUG_MEMORY_ALIGNMENT 4
+	#define DEBUG_MEMORY_ROW_LENGTH 4
+#endif
 
 // prints some piece of memory
 extern void show_memory(const void *start, const size_t size);
 
 //
+// OUTPUT FORMATS
+//
+#if defined(_WIN64) || defined(__x86_64__)
+	// 64-bit systems
+	#define HEX_FORMAT	"0x%08lX"
+	#define UINT_FORMAT "%lu"
+#else
+	// 32-bit systems
+	#define HEX_FORMAT	"0x%08X"
+	#define UINT_FORMAT	"%u"
+#endif
+//
 // MESSAGES
 //
 #ifdef DEBUG_MESSAGES
 	#define PRINT(mes) fprintf(stdout, "[DEBUG MESSAGE]: %s\n", mes)
-	#define PRINT_INT(value) fprintf(stdout, "[DEBUG_MESSAGE]: %s = %d\n", #value, (size_t)value)
-	#define PRINT_HEX(value) fprintf(stdout, "[DEBUG_MESSAGE]: %s = 0x%08X\n", #value, (size_t)value)
+#define PRINT_UINT(value) fprintf(stdout, "[DEBUG_MESSAGE]: %s = " UINT_FORMAT "\n", #value, (const size_t)value)
+#define PRINT_HEX(value) fprintf(stdout, "[DEBUG_MESSAGE]: %s = " HEX_FORMAT "\n", #value, (const size_t)value)
 #else
 	#define PRINT(mes)
-	#define PRINT_INT(value)
+	#define PRINT_UINT(value)
 	#define PRINT_HEX(value)
 #endif	// DEBUG_MESSAGES
 
